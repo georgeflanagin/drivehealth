@@ -62,7 +62,7 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
     mylistofhosts = parser.get("hostnames", "hosts").split(" ")
 
     SQL_majorinfo = """INSERT INTO majorinfo (workstation, serial_number, device_model) VALUES (?,?,?)"""
-    SQL_attributes = """INSERT INTO attribute_value (serial_number, ID, raw_value) VALUES (?,?,?)"""
+    SQL_attributes = """INSERT INTO attribute_value (workstation, serial_number, ID, raw_value) VALUES (?,?,?,?)"""
 
     #commands to retrieve data from drives on workstations
     cmd_list_of_drives = "ssh -o ConnectTimeout=5 root@{} 'ls -1 /dev/sd?'" #command to get the list of drives on the machine
@@ -71,7 +71,7 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
     
     #IDs of attributes of interest
     IDs_of_interest = [1, 3, 4, 5, 7, 8, 9, 10, 11, 192, 194, 196, 197, 198, 200]
-        
+           
     for host in mylistofhosts:
         list_drives = dorunrun(cmd_list_of_drives.format(host), return_datatype = str)
         for drive in list_drives.split("\n"):
@@ -95,7 +95,7 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
                 pass
 
         db.commit()
-
+    
     for host in mylistofhosts:
         #list_drives = dorunrun(cmd_list_of_drives.format(host), return_datatype = str)
         for drive in list_drives.split("\n"):
@@ -113,8 +113,8 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
                 #db.execute_SQL(SQL_attributes, serial_number, ID, raw_value)
                 if int(ID) in IDs_of_interest:
                     try:
-                        print(serial_number, ID, raw_value)
-                        db.execute_SQL(SQL_attributes, serial_number, ID, raw_value)
+                        print(host, serial_number, ID, raw_value)
+                        db.execute_SQL(SQL_attributes, host, serial_number, ID, raw_value)
                     except sqlite3.Error as e:
                         print(e)
                     #print(major_info, ID, raw_value) 

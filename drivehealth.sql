@@ -6,10 +6,11 @@ create table if not exists majorinfo (
 )
 
 create table if not exists attribute_value (
+    workstation varchar(10),
     serial_number varchar(30),
     ID varchar(5),
     raw_value varchar(20),
     mod_time datetime default current_timestamp,
-    foreign key(serial_number) references majorinfo(serial_number)
+    foreign key(workstation, serial_number) references majorinfo(workstation, serial_number)
 )
 
