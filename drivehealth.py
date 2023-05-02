@@ -94,11 +94,7 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
             except sqlite3.Error:
                 pass
 
-        db.commit()
-    
-    for host in mylistofhosts:
-        #list_drives = dorunrun(cmd_list_of_drives.format(host), return_datatype = str)
-        for drive in list_drives.split("\n"):
+            db.commit()
 
             #find out the ID and corresponding raw value
             report_attributes = dorunrun(cmd_info_attr.format(host, drive), return_datatype = str)
