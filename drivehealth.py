@@ -70,7 +70,8 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
     cmd_info_attr = "ssh -o ConnectTimeout=5 root@{} 'smartctl --attributes {}'" #command to get a table for attributes only
     
     #IDs of attributes of interest
-    IDs_of_interest = [1, 3, 4, 5, 7, 8, 9, 10, 11, 192, 194, 196, 197, 198, 200]
+    IDs_of_interest = (1, 3, 4, 5, 7, 8, 9, 10, 11, 192, 194, 196, 197, 198, 200)
+    temps = (194, 190, 205)
            
     for host in mylistofhosts:
         list_drives = dorunrun(cmd_list_of_drives.format(host), return_datatype = str)
@@ -107,7 +108,8 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
                 ID = line[0]
                 raw_value = " ".join(line[len(line)-7:]).strip() 
                 #db.execute_SQL(SQL_attributes, serial_number, ID, raw_value)
-                if int(ID) in IDs_of_interest:
+                if (( myargs.temps_only and int(ID) in temps ) or
+                    ( not myargs.temps_only and int(ID) in IDs_of_interest | temps)):
                     try:
                         print(host, serial_number, ID, raw_value)
                         db.execute_SQL(SQL_attributes, host, serial_number, ID, raw_value)
@@ -129,6 +131,8 @@ if __name__ == '__main__':
         help="Input file that contains list of current hosts.")
     parser.add_argument('-o', '--output', type=str, default="",
         help="Output file name")
+    parser.add_argument('-t', '--temps-only', action='store_true',
+        help="Only record the temperatures in the database.")
     parser.add_argument('-v', '--verbose', action='store_true',
         help="Be chatty about what is taking place")
     parser.add_argument('--db', type=str, default=os.path.realpath(f"{this_dir}/drivehealth.db"),
