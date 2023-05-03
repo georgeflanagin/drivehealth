@@ -49,6 +49,7 @@ CREATE VIEW latest as
     group by majorinfo.workstation, sn, ID
     order by workstation, sn, ID, value, time
 
+
 CREATE VIEW latest_w_desc as
     select 
         latest.workstation as workstation, 
