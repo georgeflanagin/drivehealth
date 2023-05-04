@@ -70,8 +70,8 @@ def drivehealth_main(myargs:argparse.Namespace) -> int:
     cmd_info_attr = "ssh -o ConnectTimeout=5 root@{} 'smartctl --attributes {}'" #command to get a table for attributes only
     
     #IDs of attributes of interest
-    IDs_of_interest = set(1, 3, 4, 5, 7, 8, 9, 10, 11, 192, 194, 196, 197, 198, 200)
-    temps = set(194, 190, 205)
+    IDs_of_interest = {1, 3, 4, 5, 7, 8, 9, 10, 11, 192, 194, 196, 197, 198, 200}
+    temps = {194, 190, 205}
            
     for host in mylistofhosts:
         list_drives = dorunrun(cmd_list_of_drives.format(host), return_datatype = str)
